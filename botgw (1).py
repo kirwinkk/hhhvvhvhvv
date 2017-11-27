@@ -10,12 +10,9 @@ import goslate
 import time
 import os
 
-#kk = LINETCR.LINE()
-#kk.login(qr=True)
-#kk.loginResult()
 
 cl = LINETCR.LINE()
-cl.login(token="EnbYH75kONsS3vC7truc.ZAsr79J2mzVFns8C/eYeNa.7S5uCfSsG+6sTS+Mbs7IMtPTRqQsArvvyVNYJu1qkaA=")
+cl.login(token="Emea2zZWDTaiWK8V6ST9.MZrkjd9u6Oz3cBqGai+WIq.v68AtOIgGt2DvIsYrdZMmzka9CKX0xmSH0jRWX0WWL8=")
 cl.loginResult()
 
 
