@@ -26,6 +26,7 @@ sys.setdefaultencoding('utf-8')
 
 helpMessage ="""
 
+
          Asᴛʀᴏɴᴏᴜᴛ Bᴏᴛ             
 ═══════════════════════════
 ☮Apakah (seperti kerang ajaib)
