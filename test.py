@@ -241,9 +241,18 @@ def bot(op):
                 cl.like(url[25:58], url[66:], likeType=1001)
         if op.type == 26:
             msg = op.message
-               if wait["contact"] == True:
+            if msg.contentType == 13:
                     msg.contentType = 0
-                    cl.sendText(msg.to,msg.contentMetadata["mid"])
+                    if 'displayName' in msg.contentMetadata:
+                        contact = cl.getContact(msg.contentMetadata["mid"])
+                        try:
+                            cu = cl.channel.getCover(msg.contentMetadata["mid"])
+                        except:
+                            cu = ""
+			if msg.contentMetadata["mid"] in wait["blacklist"]:
+                             cl.sendText(msg.to,msg.contentMetadata["mid"])
+                        else:
+			     cl.sendText(msg.to,msg.contentMetadata["mid"])
             elif msg.contentType == 16:
                 if wait["timeline"] == True:
                     msg.contentType = 0
@@ -374,8 +383,8 @@ def bot(op):
 
 
          #-------------Fungsi Change Clock Finish-----------------#
-            elif "Gift @" in msg.text:
-                _name = msg.text.replace("Gift @","")
+            elif "/gift:@" in msg.text:
+                _name = msg.text.replace("/gift:@","")
                 _nametarget = _name.rstrip(' ')
                 gs = cl.getGroup(msg.to)
                 for g in gs.members:
@@ -412,13 +421,7 @@ def bot(op):
 		pass
 
 
-            elif "#mc:" in msg.text:
-              if msg.from_ in admin + staff:
-		key = eval(msg.contentMetadata["MENTION"])
-                key1 = key["MENTIONEES"][0]["M"]
-                msg.contentType = 13
-                msg.contentMetadata = {"mid":key1}
-                ki.sendMessage(msg)
+
 #-------------------#
 
 	    elif "/head:" in msg.text:
@@ -437,7 +440,7 @@ def bot(op):
 
 
 	    elif "/home:" in msg.text:
-                targets = []
+                   targets = []
                    key = eval(msg.contentMetadata["MENTION"])
                    key["MENTIONEES"][0]["M"]
                    for x in key["MENTIONEES"]:
@@ -462,8 +465,8 @@ def bot(op):
 #--------------------------------------------------------
             elif '/instagram:' in msg.text.lower():
                 try:
-                    instagram = msg.text.lower().replace(".instagram:","")
-                    html = requests.get('https://www.instagram.com/' + instagram + '/?')
+                    instagram = msg.text.lower().replace("/instagram:","")
+                    html = requests.get("https://www.instagram.com/" + instagram + "/?")
                     soup = BeautifulSoup(html.text, 'html5lib')
                     data = soup.find_all('meta', attrs={'property':'og:description'})
                     text = data[0].get('content').split()
@@ -476,8 +479,7 @@ def bot(op):
                     post = "發文數: " + text[4] + "\n"
                     link = "網址: " + "https://www.instagram.com/" + instagram
                     detail = "========INSTAGRAM 用戶詳情========\n"
-                    details = ""
-                    cl.sendText(msg.to, detail + user + user1 + followers + following + post + link + details)
+                    cl.sendText(msg.to, detail + user + user1 + followers + following + post + link)
                     cl.sendImageWithURL(msg.to, text1[0])
                 except Exception as njer:
                 	cl.sendText(msg.to, str(njer))
@@ -522,6 +524,7 @@ def bot(op):
                  tts = gTTS(psn, lang='id', slow=False)
                  tts.save('tts.mp3')
                  cl.sendAudio(msg.to, 'tts.mp3')
+
             elif "/Say:" in msg.text:
                 say = msg.text.replace("/Say:","")
                 lang = 'id'
@@ -565,27 +568,22 @@ def bot(op):
 
 #-------------------------------------------------------
 	    elif "Gbc:" in msg.text:
-	      if msg.from_ in admin:
 		bctxt = msg.text.replace("Gbc:", "")
     		n = cl.getGroupIdsJoined()
     	        for manusia in n:
 	            cl.sendText(manusia, (bctxt))
 
 	    elif "Cbc:" in msg.text:
-	      if msg.from_ in admin:
     		bctxt = msg.text.replace("Cbc:", "")
     		t = cl.getAllContactIds()
     		for manusia in t:
          	    cl.sendText(manusia, (bctxt))
 #--------------------------------- TRANSLATE --------------------------------
 	    elif "/t-en:" in msg.text:
-                txt = msg.text.replace("/t-en:","")
-                try:
+                    txt = msg.text.replace("/t-en:","")
                     gs = goslate.Goslate()
                     trs = gs.translate(txt,'en')
                     cl.sendText(msg.to,trs)
-                except:
-                    cl.sendText(msg.to,'Error.')
 		
 	    elif "/t-zh:" in msg.text:
                 txt = msg.text.replace("/t-zh:","")
@@ -606,15 +604,7 @@ def bot(op):
                     cl.sendText(msg.to,'Error.')
 
 
-#----------------------
 
-
-
-	#-------------------------------#
-
-
-
-         #-------------Fungsi Jam Update Start---------------------#            
 
          #-------------Fungsi Jam Update Finish-------------------#
 	    elif msg.text in ["/set"]:
@@ -631,16 +621,14 @@ def bot(op):
  		    wait2['ROM'][msg.to] = {}
 
 
-	    elif msg.text in ["/tes"]:
+	    elif msg.text in ["/read"]:
  		 if msg.toType == 2:
- 		    print "\nSider check aktif..."
   		    if msg.to in wait2['readPoint']:
  			if wait2["ROM"][msg.to].items() == []:
  			    chiya = ""
  			else:
 			    chiya = ""
 			    for rom in wait2["ROM"][msg.to].items():
- 				print rom
 				chiya += rom[1] + "\n"
  			cl.sendText(msg.to, "已讀者:\n%s\n\n\n已讀點設置時間:\n[%s]" % (wait2['readMember'][msg.to],setTime[msg.to]))
 		    else:
@@ -661,7 +649,7 @@ def bot(op):
 		    if Name in wait2['readMember'][op.param1]:
 			pass
 		    else:
-			wait2['readMember'][op.param1] += "\n・ " + Name + datetime.today().strftime(' [%d - %H:%M:%S]')
+			wait2['readMember'][op.param1] += "\n・ " + Name + "\n  " + datetime.today().strftime(' [%m/%d - %H:%M:%S]')
 			wait2['ROM'][op.param1][op.param2] = "・ " + Name
 			wait2['setTime'][msg.to] = datetime.today().strftime('%Y/%m/%d %H:%M:%S.%f')
 		else:
@@ -686,7 +674,8 @@ def nameUpdate():
                 cl.updateProfile(profile)
 		profile = cl.getProfile()
 		fid =  cl.getAllContactIds()
-		profile.statusMessage = "台湾戦神☆style\nFriend: " + str(len(fid)) + "\n\nMade in Taiwan"
+		gid =  cl.getGroupIdsJoined()
+		profile.statusMessage = "台湾戦神☆style\nFriend: " + str(len(fid)) + "\nGroups: " + str(len(gid)) + "\n\nMade in Taiwan"
 		cl.updateProfile(profile)
                 time.sleep(180)
         except:
@@ -694,6 +683,7 @@ def nameUpdate():
 thread1 = threading.Thread(target=nameUpdate)
 thread1.daemon = True
 thread1.start()
+
 
 while True:
     try:
