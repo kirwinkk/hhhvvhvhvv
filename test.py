@@ -241,9 +241,18 @@ def bot(op):
                 cl.like(url[25:58], url[66:], likeType=1001)
         if op.type == 26:
             msg = op.message
-               if wait["contact"] == True:
+            if msg.contentType == 13:
                     msg.contentType = 0
-                    cl.sendText(msg.to,msg.contentMetadata["mid"])
+                    if 'displayName' in msg.contentMetadata:
+                        contact = cl.getContact(msg.contentMetadata["mid"])
+                        try:
+                            cu = cl.channel.getCover(msg.contentMetadata["mid"])
+                        except:
+                            cu = ""
+			if msg.contentMetadata["mid"] in wait["blacklist"]:
+                             cl.sendText(msg.to,msg.contentMetadata["mid"])
+                        else:
+			     cl.sendText(msg.to,msg.contentMetadata["mid"])
             elif msg.contentType == 16:
                 if wait["timeline"] == True:
                     msg.contentType = 0
@@ -437,7 +446,7 @@ def bot(op):
 
 
 	    elif "/home:" in msg.text:
-                targets = []
+                   targets = []
                    key = eval(msg.contentMetadata["MENTION"])
                    key["MENTIONEES"][0]["M"]
                    for x in key["MENTIONEES"]:
@@ -522,6 +531,7 @@ def bot(op):
                  tts = gTTS(psn, lang='id', slow=False)
                  tts.save('tts.mp3')
                  cl.sendAudio(msg.to, 'tts.mp3')
+
             elif "/Say:" in msg.text:
                 say = msg.text.replace("/Say:","")
                 lang = 'id'
@@ -579,13 +589,10 @@ def bot(op):
          	    cl.sendText(manusia, (bctxt))
 #--------------------------------- TRANSLATE --------------------------------
 	    elif "/t-en:" in msg.text:
-                txt = msg.text.replace("/t-en:","")
-                try:
+                    txt = msg.text.replace("/t-en:","")
                     gs = goslate.Goslate()
                     trs = gs.translate(txt,'en')
                     cl.sendText(msg.to,trs)
-                except:
-                    cl.sendText(msg.to,'Error.')
 		
 	    elif "/t-zh:" in msg.text:
                 txt = msg.text.replace("/t-zh:","")
@@ -606,15 +613,7 @@ def bot(op):
                     cl.sendText(msg.to,'Error.')
 
 
-#----------------------
 
-
-
-	#-------------------------------#
-
-
-
-         #-------------Fungsi Jam Update Start---------------------#            
 
          #-------------Fungsi Jam Update Finish-------------------#
 	    elif msg.text in ["/set"]:
@@ -631,16 +630,14 @@ def bot(op):
  		    wait2['ROM'][msg.to] = {}
 
 
-	    elif msg.text in ["/tes"]:
+	    elif msg.text in ["/read"]:
  		 if msg.toType == 2:
- 		    print "\nSider check aktif..."
   		    if msg.to in wait2['readPoint']:
  			if wait2["ROM"][msg.to].items() == []:
  			    chiya = ""
  			else:
 			    chiya = ""
 			    for rom in wait2["ROM"][msg.to].items():
- 				print rom
 				chiya += rom[1] + "\n"
  			cl.sendText(msg.to, "已讀者:\n%s\n\n\n已讀點設置時間:\n[%s]" % (wait2['readMember'][msg.to],setTime[msg.to]))
 		    else:
@@ -661,7 +658,7 @@ def bot(op):
 		    if Name in wait2['readMember'][op.param1]:
 			pass
 		    else:
-			wait2['readMember'][op.param1] += "\n・ " + Name + datetime.today().strftime(' [%d - %H:%M:%S]')
+			wait2['readMember'][op.param1] += "\n・ " + Name + "\n  " + datetime.today().strftime(' [%m/%d - %H:%M:%S]')
 			wait2['ROM'][op.param1][op.param2] = "・ " + Name
 			wait2['setTime'][msg.to] = datetime.today().strftime('%Y/%m/%d %H:%M:%S.%f')
 		else:
@@ -694,6 +691,7 @@ def nameUpdate():
 thread1 = threading.Thread(target=nameUpdate)
 thread1.daemon = True
 thread1.start()
+
 
 while True:
     try:
