@@ -353,6 +353,8 @@ def bot(op):
                     cl.cancelGroupInvitation(op.param1, matched_list)
 
 #-------------------------------------------------------------------------------
+
+
 	if op.type == 15:
 	    if op.param2 in Bots:
 		return
