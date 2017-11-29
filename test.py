@@ -40,6 +40,7 @@ helpMessage ="""戦神FreeBOT
 [/user:@]→查看標註者詳情
 [/gift]→發送禮物
 [/time]→現在時間
+[/運勢]→今日運勢
 [/bye]→退出群組
 
 注意:此機器僅能邀入50人以上之群組
@@ -213,6 +214,18 @@ def bot(op):
                     pass
                 else:
                     cl.cancelGroupInvitation(op.param1, matched_list)
+		
+        if op.type == 13:
+		ginfo = cl.getGroup(op.param1)
+                if ginfo.invitee is None:
+                            sinvitee = "0"
+                else:
+                            sinvitee = str(len(ginfo.invitee))
+		try:
+                        cl.sendText(op.param1,"招待中人數: " + sinvitee)
+                except:
+                        cl.sendText(op.param1,"招待中人數: " + sinvitee)
+		
 
 #-------------------------------------------------------------------------------
 
@@ -267,13 +280,9 @@ def bot(op):
                              cl.sendText(msg.to,msg.contentMetadata["mid"] + "\n\n[" + datetime.today().strftime('%Y/%m/%d  %H:%M:%S.%f') + "]")
                         else:
 			     cl.sendText(msg.to,msg.contentMetadata["mid"] + "\n\n[" + datetime.today().strftime('%Y/%m/%d  %H:%M:%S.%f') + "]")
-            elif msg.contentType == 16:
-                    msg.contentType = 0
-                    if wait["lang"] == "JP":
-                        msg.text = msg.contentMetadata["postEndUrl"]
-                    else:
-                        msg.text = msg.contentMetadata["postEndUrl"]
-                    cl.sendText(msg.to,msg.text + "\n\n[" + datetime.today().strftime('%Y/%m/%d  %H:%M:%S.%f') + "]")
+            if msg.contentType == 16:
+                url = msg.contentMetadata("line://home/post?userMid="+mid+"&postId="+"new_post")
+                cl.sendText(msg.to,url + "\n\n[" + datetime.today().strftime('%Y/%m/%d  %H:%M:%S.%f') + "]")
 		
             elif msg.text is None:
                 return
@@ -495,6 +504,11 @@ def bot(op):
 		    else:
 			cl.sendText(msg.to, "請先打[/set]設置已讀點" + "\n\n[" + datetime.today().strftime('%Y/%m/%d  %H:%M:%S.%f') + "]")
 
+			
+            elif "運勢" in msg.text:
+		a1, a2, a3, a4, a5, a6, a7, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10 = "1", "2", "3", "4", "5","6", "7", "8", "9", "10", "8", "7", "9", "6", "5", "8", "7"
+                omikujilist = [a1,a2,a3,a4,a5,a6,a7,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10]
+		cl.sendText(msg.to,"今日運勢"+"\n[愛情]→☆"+ random.choice(omikujilist) +"\n[金錢]→☆"+ random.choice(omikujilist)+"\n[健康]→☆"+ random.choice(omikujilist)+"\n[友情]→☆"+ random.choice(omikujilist)+"\n[工作]→☆"+ random.choice(omikujilist)+"\n[運氣]→☆"+ random.choice(omikujilist) + "\n\n[" + datetime.today().strftime('%Y/%m/%d  %H:%M:%S.%f') + "]")
 
 
 #-----------------------------------------------
